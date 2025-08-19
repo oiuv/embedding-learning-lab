@@ -241,11 +241,18 @@ def main():
         system = TextRecommendationSystem()
         system.demo_recommendation_system()
         
-        print("\n🎉 演示完成！")
-        print("\n使用示例：")
-        print("1. 文本推荐：system.get_recommendations('查询文本', k=3)")
-        print("2. 相似文章：system.recommend_similar_articles(article_index, k=5)")
-        print("3. 相似度矩阵：system.get_similarity_matrix()")
+        print("\n🎉 推荐系统演示完成！")
+        print("\n核心技术总结：")
+        print("   • 基于内容的推荐")
+        print("   • 相似度计算")
+        print("   • 缓存机制优化")
+        print("   • 大规模数据处理")
+        print("\n实际应用场景：")
+        print("   • 文章推荐系统")
+        print("   • 产品推荐引擎")
+        print("   • 个性化内容推荐")
+        print("   • 用户兴趣建模")
+        print("\n下一课：04-clustering-analysis.py - 聚类分析")
         
     except Exception as e:
         print(f"❌ 运行错误：{e}")
