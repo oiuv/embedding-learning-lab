@@ -144,26 +144,53 @@ class AdvancedEmbeddingSystem:
         
         reduced_embeddings = reducer.fit_transform(embeddings_array)
         
+        # 设置中文字体
+        plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+        plt.rcParams['axes.unicode_minus'] = False
+        
         # 绘图
-        plt.figure(figsize=(12, 8))
-        scatter = plt.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], 
+        fig, ax = plt.subplots(figsize=(12, 8))
+        scatter = ax.scatter(reduced_embeddings[:, 0], reduced_embeddings[:, 1], 
                             alpha=0.6, s=100)
         
-        # 添加标签
-        for i, text in enumerate(texts):
-            label = labels[i] if labels else text[:20] + "..."
-            plt.annotate(label, (reduced_embeddings[i, 0], reduced_embeddings[i, 1]), 
-                        fontsize=8, alpha=0.8)
+        # 添加标签 - 使用英文标签避免中文显示问题
+        fallback_labels = [
+            "ML", "DL", "NN", "Python", "Java", "Web", 
+            "Food", "Pasta", "Sushi", "Sports"
+        ]
         
-        plt.title(f"文本嵌入可视化 ({method.upper()})")
-        plt.xlabel("Component 1")
-        plt.ylabel("Component 2")
-        plt.grid(True, alpha=0.3)
+        for i, text in enumerate(texts):
+            if labels and i < len(labels):
+                label = labels[i]
+                # 如果标签是中文，使用英文fallback
+                if any('\u4e00' <= c <= '\u9fff' for c in str(label)):
+                    label = fallback_labels[i] if i < len(fallback_labels) else f"Item{i+1}"
+            else:
+                # 中文文本使用英文缩写
+                label = fallback_labels[i] if i < len(fallback_labels) else f"Item{i+1}"
+            
+            ax.annotate(label, (reduced_embeddings[i, 0], reduced_embeddings[i, 1]), 
+                        fontsize=10, alpha=0.8, ha='center')
+        
+        ax.set_title(f"Text Embedding Visualization ({method.upper()})")
+        ax.set_xlabel("Component 1")
+        ax.set_ylabel("Component 2")
+        ax.grid(True, alpha=0.3)
+        
+        # 添加文本说明
+        fig.text(0.02, 0.02, 
+                f"Texts: {len(texts)} | Method: {method.upper()} | Dimension: {self.dimensions}", 
+                fontsize=8, alpha=0.7)
+        
+        plt.tight_layout()
         
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
+            print(f"✅ 可视化已保存为 {save_path}")
         else:
             plt.show()
+        
+        plt.close()
     
     def build_knowledge_base(self, documents: List[Dict]):
         """构建知识库"""

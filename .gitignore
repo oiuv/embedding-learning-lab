@@ -1,7 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.class
 *.so
 .Python
 build/
@@ -30,34 +30,45 @@ ENV/
 .idea/
 *.swp
 *.swo
-*~
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
-# Project specific
-data/indices/
-data/cache/
-data/embeddings/
-*.pkl
+# Project specific auto-generated files
 *.db
+*.pkl
+*.png
+*.jpg
+*.jpeg
+*.svg
 *.log
 
-# Secrets
-.env
-.secrets/
-config.local.json
+# Cache files
+.cache/
+*.cache
 
-# Jupyter
-.ipynb_checkpoints/
+# Temporary files
+*.tmp
+*.temp
 
-# Testing
-.coverage
-.pytest_cache/
-htmlcov/
-.tox/
+# Embedding specific
+text_recommendations.pkl
+review_embeddings.pkl
+knowledge_embeddings_*.pkl
+embeddings.db
+embeddings_visualization.png
 
-# Build artifacts
-build/
-dist/
+# Data files (keep sample files)
+data/embeddings/
+data/documents/
+!data/sample_texts.txt
+
+# Test outputs
+tests/*.db
+tests/*.pkl
+tests/*.png
+tests/*.jpg
+tests/embeddings_visualization.png
+tests/knowledge_embeddings_*.pkl
