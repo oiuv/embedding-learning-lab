@@ -87,25 +87,19 @@ class TextEmbeddingConcept:
         }
         
         # 绘制2D图
-        # 设置matplotlib以避免中文显示问题
-        plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+        # 设置matplotlib以支持中文显示
+        plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'Arial Unicode MS', 'DejaVu Sans']
         plt.rcParams['axes.unicode_minus'] = False
         
         plt.figure(figsize=(10, 8))
         
         for word, (x, y) in coordinates.items():
             plt.scatter(x, y, s=100)
-            # 使用英文标签避免中文显示问题
-            english_labels = {
-                '开心': 'happy', '高兴': 'joyful', '悲伤': 'sad', '难过': 'upset',
-                '愤怒': 'angry', '生气': 'furious', '平静': 'calm', '安宁': 'peaceful'
-            }
-            label = english_labels.get(word, word)
-            plt.annotate(label, (x, y), fontsize=12, ha='center', va='bottom')
+            plt.annotate(word, (x, y), fontsize=12, ha='center', va='bottom')
         
-        plt.title("Word Vector Space Visualization", fontsize=14)
-        plt.xlabel("Dimension 1", fontsize=12)
-        plt.ylabel("Dimension 2", fontsize=12)
+        plt.title("情感词汇的2D向量空间表示", fontsize=14)
+        plt.xlabel("维度1", fontsize=12)
+        plt.ylabel("维度2", fontsize=12)
         plt.grid(True, alpha=0.3)
         plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
         plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
