@@ -224,10 +224,10 @@ class TextClusteringSystem:
             mask = labels == label
             if label == -1:  # 噪声点
                 plt.scatter(embeddings_2d[mask, 0], embeddings_2d[mask, 1], 
-                          c='gray', marker='x', s=50, label='噪声点')
+                          color='gray', marker='x', s=50, label='噪声点')
             else:
                 plt.scatter(embeddings_2d[mask, 0], embeddings_2d[mask, 1], 
-                          c=colors[i], alpha=0.7, label=f'聚类{label}')
+                          color=colors[i % len(colors)], alpha=0.7, label=f'聚类{label}')
         
         # 添加文本标签（显示部分文本）
         for i, (x, y) in enumerate(embeddings_2d):
