@@ -1,0 +1,39 @@
+{
+  "api_settings": {
+    "model": "text-embedding-v4",
+    "dimensions": 1024,
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "max_batch_size": 100
+  },
+  "search_settings": {
+    "default_threshold": 0.3,
+    "max_results": 10,
+    "enable_suggestions": true
+  },
+  "storage_settings": {
+    "index_dir": "data/indices",
+    "cache_dir": "data/cache",
+    "backup_enabled": true
+  },
+  "performance_settings": {
+    "use_batch_processing": true,
+    "enable_caching": true,
+    "cache_ttl": 3600
+  },
+  "examples": {
+    "sample_queries": [
+      "什么是机器学习",
+      "推荐一款拍照手机",
+      "Python数据分析教程",
+      "最新的AI技术",
+      "健康饮食建议"
+    ],
+    "demo_documents": [
+      "人工智能正在改变我们的生活和工作方式",
+      "机器学习是人工智能的重要分支，通过数据学习模式",
+      "深度学习使用神经网络处理复杂问题，需要大量计算资源",
+      "Python是最流行的数据科学语言，拥有丰富的库生态系统",
+      "自然语言处理让计算机理解和处理人类语言"
+    ]
+  }
+}
