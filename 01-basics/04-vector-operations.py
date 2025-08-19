@@ -238,6 +238,10 @@ class VectorOperations:
         tsne = TSNE(n_components=2, random_state=42, perplexity=3)
         embeddings_2d_tsne = tsne.fit_transform(embeddings_array)
         
+        # 设置matplotlib以支持中文显示
+        plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'Arial Unicode MS', 'DejaVu Sans']
+        plt.rcParams['axes.unicode_minus'] = False
+        
         # 创建可视化
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
         
