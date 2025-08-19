@@ -47,7 +47,7 @@ class OfficialEmbeddingExamples:
                 "embedding": completion.data[0].embedding,
                 "dimensions": len(completion.data[0].embedding),
                 "model": completion.model,
-                "usage": completion.usage.dict()
+                "usage": completion.usage.model_dump()
             }
             
             return result
@@ -84,7 +84,7 @@ class OfficialEmbeddingExamples:
                 "results": results,
                 "total": len(results),
                 "model": completion.model,
-                "usage": completion.usage.dict()
+                "usage": completion.usage.model_dump()
             }
             
         except Exception as e:
@@ -124,7 +124,7 @@ class OfficialEmbeddingExamples:
                 "results": results,
                 "total_lines": len(results),
                 "model": completion.model,
-                "usage": completion.usage.dict()
+                "usage": completion.usage.model_dump()
             }
             
         except FileNotFoundError:
