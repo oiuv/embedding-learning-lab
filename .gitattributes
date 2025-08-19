@@ -1,0 +1,60 @@
+# 设置默认换行符为LF
+* text=auto eol=lf
+
+# Windows批处理文件使用CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Windows PowerShell脚本使用CRLF
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+*.psd1 text eol=crlf
+
+# 确保Unix脚本保持LF
+*.sh text eol=lf
+
+# Python文件保持LF
+*.py text eol=lf
+
+# 配置文件保持LF
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.cfg text eol=lf
+*.ini text eol=lf
+
+# 文档文件保持LF
+*.md text eol=lf
+*.txt text eol=lf
+*.rst text eol=lf
+
+# Web相关文件保持LF
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.jsx text eol=lf
+*.tsx text eol=lf
+
+# 数据库文件保持LF
+*.sql text eol=lf
+
+# 二进制文件不进行换行符转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.exe binary
+*.dll binary
+
+# Jupyter notebook保持原样
+*.ipynb text eol=lf
+
+# 其他需要保持LF的文本文件
+*.csv text eol=lf
+*.tsv text eol=lf
