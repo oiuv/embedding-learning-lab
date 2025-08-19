@@ -48,13 +48,21 @@ class EmbeddingTutorial:
     
     def get_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
         """批量获取文本嵌入向量"""
-        response = self.client.embeddings.create(
-            model=self.model,
-            input=texts,
-            dimensions=self.dimensions,
-            encoding_format="float"
-        )
-        return [data.embedding for data in response.data]
+        # API限制批处理大小为10
+        max_batch_size = 10
+        all_embeddings = []
+        
+        for i in range(0, len(texts), max_batch_size):
+            batch = texts[i:i+max_batch_size]
+            response = self.client.embeddings.create(
+                model=self.model,
+                input=batch,
+                dimensions=self.dimensions,
+                encoding_format="float"
+            )
+            all_embeddings.extend([data.embedding for data in response.data])
+        
+        return all_embeddings
     
     def cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
         """计算余弦相似度"""

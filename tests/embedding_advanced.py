@@ -102,13 +102,21 @@ class AdvancedEmbeddingSystem:
     
     def get_embeddings_batch(self, texts: List[str]) -> List[List[float]]:
         """批量获取文本嵌入"""
-        response = self.client.embeddings.create(
-            model=self.model,
-            input=texts,
-            dimensions=self.dimensions,
-            encoding_format="float"
-        )
-        return [data.embedding for data in response.data]
+        # API限制批处理大小为10
+        max_batch_size = 10
+        all_embeddings = []
+        
+        for i in range(0, len(texts), max_batch_size):
+            batch = texts[i:i+max_batch_size]
+            response = self.client.embeddings.create(
+                model=self.model,
+                input=batch,
+                dimensions=self.dimensions,
+                encoding_format="float"
+            )
+            all_embeddings.extend([data.embedding for data in response.data])
+        
+        return all_embeddings
     
     def cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
         """计算余弦相似度"""
@@ -117,6 +125,14 @@ class AdvancedEmbeddingSystem:
     def visualize_embeddings(self, texts: List[str], labels: List[str] = None, 
                            method: str = "tsne", save_path: str = None):
         """可视化文本嵌入"""
+        # 限制批处理大小为10以内
+        batch_size = 10
+        if len(texts) > batch_size:
+            print(f"⚠️ 文本数量过多({len(texts)}个)，限制为{batch_size}个")
+            texts = texts[:batch_size]
+            if labels:
+                labels = labels[:batch_size]
+        
         embeddings = self.get_embeddings_batch(texts)
         embeddings_array = np.array(embeddings)
         
@@ -314,7 +330,7 @@ def demo_visualization():
     
     system = AdvancedEmbeddingSystem()
     
-    # 准备数据
+    # 准备数据 - 限制为10个以内
     texts = [
         "机器学习算法",
         "深度学习模型",
@@ -325,13 +341,11 @@ def demo_visualization():
         "牛排烹饪",
         "意大利面",
         "寿司制作",
-        "足球比赛",
-        "篮球运动",
-        "游泳健身"
+        "足球比赛"
     ]
     
     labels = ["AI", "AI", "AI", "编程", "编程", "编程", 
-              "美食", "美食", "美食", "运动", "运动", "运动"]
+              "美食", "美食", "美食", "运动"]
     
     # 创建可视化
     system.visualize_embeddings(texts, labels, method="tsne", 
