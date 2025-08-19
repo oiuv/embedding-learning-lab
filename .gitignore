@@ -65,6 +65,17 @@ data/embeddings/
 data/documents/
 !data/sample_texts.txt
 
+# 各级目录运行生成的文件
+01-basics/data/
+01-basics/*.png
+01-basics/*.txt
+01-basics/*.pkl
+
+02-intermediate/data/
+02-intermediate/*.png  
+02-intermediate/*.txt
+02-intermediate/*.pkl
+
 # Test outputs
 tests/*.db
 tests/*.pkl
