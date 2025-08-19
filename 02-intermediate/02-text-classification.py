@@ -331,7 +331,7 @@ def main():
         print("   • 垃圾邮件检测")
         print("   • 客户反馈分析")
         print("   • 社交媒体内容审核")
-        print("\n下一课：03-recommendation-system.py - 推荐系统")
+        print("\n下一课：03-text-recommendation.py - 推荐系统")
         
     except Exception as e:
         print(f"❌ 运行错误: {e}")
