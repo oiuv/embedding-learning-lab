@@ -22,6 +22,12 @@
 - `03-visualization.py` - 可视化技术
 - `04-performance-optimization.py` - 性能优化
 
+### 文本排序模型 (03-text-reranking/)
+- `01-text-rerank-basics.py` - 排序模型基础
+- `02-integration-guide.py` - 系统集成指南
+- `03-comparison-demo.py` - 对比演示
+- `04-performance-benchmark.py` - 性能基准测试
+
 ### 第四阶段：实战项目 (04-projects/)
 - `01-smart-qa-system/` - 智能问答系统
 - `02-content-recommendation/` - 内容推荐引擎
@@ -37,7 +43,7 @@
 
 ### 环境要求
 ```bash
-pip install openai numpy scikit-learn pandas matplotlib seaborn sqlite3
+pip install openai numpy scikit-learn pandas matplotlib seaborn sqlite3 dashscope
 ```
 
 ### 配置API密钥
@@ -48,6 +54,21 @@ export DASHSCOPE_API_KEY="你的API密钥"
 ### 运行第一个示例
 ```bash
 python 01-basics/01-what-is-embedding.py
+```
+
+### 体验文本排序模型
+```bash
+# 基础教程
+python 03-text-reranking/01-text-rerank-basics.py
+
+# 系统集成演示
+python 03-text-reranking/02-integration-guide.py
+
+# 性能对比分析
+python 03-text-reranking/03-comparison-demo.py
+
+# 完整性能基准测试
+python 03-text-reranking/04-performance-benchmark.py
 ```
 
 ## 📖 学习进度

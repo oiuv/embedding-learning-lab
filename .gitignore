@@ -83,3 +83,15 @@ tests/*.png
 tests/*.jpg
 tests/embeddings_visualization.png
 tests/knowledge_embeddings_*.pkl
+
+# Text reranking generated files
+03-text-reranking/*.png
+03-text-reranking/*.json
+03-text-reranking/*.pkl
+03-text-reranking/benchmark_results_*.png
+03-text-reranking/sorting_comparison_results_*.json
+03-text-reranking/performance_benchmark_*.json
+
+# Keep important files
+!03-text-reranking/README.md
+!03-text-reranking/*.py
