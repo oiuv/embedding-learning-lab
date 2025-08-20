@@ -520,7 +520,7 @@ def main():
         print("   • 技术文档问答")
         print("   • 产品手册智能查询")
         print("   • 教育知识管理系统")
-        print("\n下一课：03-02-anomaly-detection.py - 异常检测")
+        print("\n下一课：02-anomaly-detection.py - 异常检测")
         
     except Exception as e:
         print(f"❌ 运行错误: {e}")

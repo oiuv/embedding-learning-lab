@@ -177,11 +177,52 @@ class TextReranker:
             )
             
             if response.status_code == 200:
-                results = self._process_response(documents, response.output.results)
-                self._set_cache(cache_key, results)
-                return results
+                try:
+                    # 安全获取输出
+                    if not hasattr(response, 'output') or response.output is None:
+                        logger.error("API响应无有效output字段")
+                        return []
+                    
+                    output = response.output
+                    api_results = None
+                    
+                    # 安全解析响应格式
+                    if isinstance(output, dict):
+                        api_results = output.get('results', [])
+                    elif isinstance(output, list):
+                        api_results = output
+                    elif hasattr(output, 'results'):
+                        # 处理对象属性访问
+                        results_attr = getattr(output, 'results')
+                        if isinstance(results_attr, list):
+                            api_results = results_attr
+                        else:
+                            api_results = []
+                    else:
+                        api_results = []
+                    
+                    # 验证结果有效性
+                    if not isinstance(api_results, list):
+                        logger.error("API响应结果格式无效，期望为列表")
+                        return []
+                    
+                    # 检查空结果
+                    if len(api_results) == 0:
+                        logger.warning("API返回空结果列表")
+                        return []
+                    
+                    results = self._process_response(documents, api_results)
+                    self._set_cache(cache_key, results)
+                    return results
+                    
+                except Exception as e:
+                    logger.error(f"处理API响应失败: {e}")
+                    logger.error(f"响应内容: {getattr(response, 'output', '无输出')}")
+                    return []
             else:
-                logger.error(f"排序API调用失败: {response}")
+                logger.error(f"排序API调用失败: HTTP状态码 {response.status_code}")
+                if hasattr(response, 'message'):
+                    logger.error(f"错误信息: {response.message}")
                 return []
                 
         except Exception as e:
@@ -190,25 +231,73 @@ class TextReranker:
     
     def _process_response(self, 
                          original_documents: List[RerankDocument],
-                         api_results: List[Dict]) -> List[RerankResult]:
+                         api_results: List) -> List[RerankResult]:
         """处理API响应"""
         results = []
+        
+        if not api_results:
+            logger.warning("处理空API结果")
+            return results
         
         # 创建原始文档映射
         doc_map = {i: doc for i, doc in enumerate(original_documents)}
         
         for api_result in api_results:
-            index = api_result.index
-            relevance_score = api_result.relevance_score
-            
-            if index in doc_map:
-                document = doc_map[index]
+            try:
+                # 安全获取索引和分数
+                if api_result is None:
+                    continue
+                
+                if isinstance(api_result, dict):
+                    index = api_result.get('index', 0)
+                    relevance_score = api_result.get('relevance_score', 0.5)
+                elif hasattr(api_result, '__dict__') or hasattr(api_result, '__slots__'):
+                    # 处理对象属性访问
+                    index = getattr(api_result, 'index', 0)
+                    relevance_score = getattr(api_result, 'relevance_score', 0.5)
+                else:
+                    # 处理简单值
+                    logger.warning(f"不支持的API结果格式: {type(api_result)}")
+                    continue
+                
+                # 验证索引范围
+                if not isinstance(index, int) or index < 0 or index >= len(original_documents):
+                    logger.warning(f"无效的文档索引: {index}, 有效范围: [0, {len(original_documents)-1}]")
+                    continue
+                
+                # 验证分数
+                if not isinstance(relevance_score, (int, float)):
+                    relevance_score = 0.5
+                
+                relevance_score = max(0.0, min(1.0, float(relevance_score)))
+                
+                if index in doc_map:
+                    document = doc_map[index]
+                    result = RerankResult(
+                        document=document,
+                        relevance_score=relevance_score,
+                        original_rank=index,
+                        new_rank=len(results),
+                        rank_change=index - len(results)
+                    )
+                    results.append(result)
+                else:
+                    logger.warning(f"找不到索引对应的文档: {index}")
+                    
+            except Exception as e:
+                logger.warning(f"处理单个排序结果失败: {e}, 结果: {api_result}")
+                continue
+        
+        # 如果没有有效结果，创建默认结果
+        if not results and original_documents:
+            logger.warning("无有效排序结果，创建默认顺序")
+            for i, doc in enumerate(original_documents):
                 result = RerankResult(
-                    document=document,
-                    relevance_score=relevance_score,
-                    original_rank=index,
-                    new_rank=len(results),
-                    rank_change=index - len(results)
+                    document=doc,
+                    relevance_score=0.5,  # 默认分数
+                    original_rank=i,
+                    new_rank=i,
+                    rank_change=0
                 )
                 results.append(result)
         

@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 # 添加项目根目录到路径
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.embedding_client import EmbeddingClient
 
 # 初始化DashScope
@@ -105,19 +105,68 @@ class TextRerankTutorial:
             )
             
             if response.status_code == 200:
-                print("\n🎯 文本排序模型结果:")
-                for rank, result in enumerate(response.output.results, 1):
-                    print(f"   {rank}. 分数: {result.relevance_score:.3f} - {result.document[:60]}...")
+                if hasattr(response, 'output') and response.output is not None:
+                    output = response.output
                     
-                    # 对比原始排名和新排名
-                    original_idx = result.index
-                    original_rank = next(i for i, (idx, _, _) in enumerate(similarities) if idx == original_idx) + 1
-                    print(f"       📈 从第{original_rank}名提升到第{rank}名")
+                    # 安全获取结果
+                    results = None
+                    if isinstance(output, dict):
+                        results = output.get('results')
+                    elif hasattr(output, 'results'):
+                        results = output.results
+                    else:
+                        results = output
+                    
+                    if results and len(results) > 0:
+                        print("\n🎯 文本排序模型结果:")
+                        
+                        for rank, result in enumerate(results, 1):
+                            try:
+                                # 安全获取属性
+                                if isinstance(result, dict):
+                                    score = result.get('relevance_score', 0.0)
+                                    doc_text = result.get('document', '')
+                                    doc_text = doc_text[:60] if len(doc_text) > 60 else doc_text
+                                    index = result.get('index', rank-1)  # 默认使用排名作为索引
+                                elif hasattr(result, '__dict__') or hasattr(result, '__slots__'):
+                                    score = getattr(result, 'relevance_score', 0.0)
+                                    doc_text = getattr(result, 'document', '')
+                                    doc_text = doc_text[:60] if len(doc_text) > 60 else doc_text
+                                    index = getattr(result, 'index', rank-1)
+                                else:
+                                    # 处理其他类型
+                                    score = float(result) if isinstance(result, (int, float)) else 0.0
+                                    doc_text = str(result)
+                                    doc_text = doc_text[:60] if len(doc_text) > 60 else doc_text
+                                    index = rank-1
+                                
+                                print(f"   {rank}. 分数: {score:.3f} - {doc_text}...")
+                                
+                                # 安全处理索引和排名对比
+                                try:
+                                    original_rank = next((i+1 for i, (idx, _, _) in enumerate(similarities) if idx == index), rank)
+                                    if original_rank != rank:
+                                        print(f"       📈 从第{original_rank}名提升到第{rank}名")
+                                except Exception:
+                                    # 如果索引对比失败，跳过排名对比
+                                    pass
+                                    
+                            except Exception as e:
+                                print(f"   ⚠️ 处理结果{rank}失败: {e}")
+                                continue
+                    else:
+                        print("   ⚠️ 无排序结果返回或结果为空")
+                else:
+                    print("   ⚠️ API响应中无有效输出数据")
             else:
-                print(f"❌ 排序失败: {response}")
+                print(f"❌ 排序失败: HTTP状态码 {response.status_code}")
+                if hasattr(response, 'message'):
+                    print(f"   错误信息: {response.message}")
+                print("   💡 提示：检查API密钥和网络连接")
                 
         except Exception as e:
             print(f"❌ 调用排序模型失败: {e}")
+            print("   💡 提示：确保DASHSCOPE_API_KEY已正确设置")
     
     def complex_scenario_demo(self):
         """复杂场景演示"""
@@ -205,17 +254,57 @@ class TextRerankTutorial:
             )
             
             if response.status_code == 200:
-                print("\n🏆 医疗文献排序结果:")
-                for rank, result in enumerate(response.output.results, 1):
-                    doc_idx = result.index
-                    doc_info = medical_docs[doc_idx]
+                if hasattr(response, 'output') and response.output is not None:
+                    output = response.output
+                    results = None
                     
-                    print(f"\n   {rank}. 📄 {doc_info['title']}")
-                    print(f"       📊 相关性分数: {result.relevance_score:.3f}")
-                    print(f"       🏷️ 类型: {doc_info['type']}")
-                    print(f"       📅 年份: {doc_info['year']}")
-                    print(f"       📈 引用数: {doc_info['citations']}")
-                    print(f"       📝 {doc_info['content'][:100]}...")
+                    if isinstance(output, dict):
+                        results = output.get('results')
+                    elif hasattr(output, 'results'):
+                        results = output.results
+                    else:
+                        results = output
+                    
+                    if results and len(results) > 0:
+                        print("\n🏆 医疗文献排序结果:")
+                        
+                        for rank, result in enumerate(results, 1):
+                            try:
+                                # 安全获取文档索引
+                                if isinstance(result, dict):
+                                    doc_idx = result.get('index', rank-1)
+                                    relevance_score = result.get('relevance_score', 0.0)
+                                elif hasattr(result, 'index'):
+                                    doc_idx = result.index
+                                    relevance_score = getattr(result, 'relevance_score', 0.0)
+                                else:
+                                    doc_idx = rank-1
+                                    relevance_score = 0.0
+                                
+                                # 确保索引在有效范围内
+                                doc_idx = max(0, min(doc_idx, len(medical_docs)-1))
+                                doc_info = medical_docs[doc_idx]
+                                
+                                print(f"\n   {rank}. 📄 {doc_info['title']}")
+                                print(f"       📊 相关性分数: {relevance_score:.3f}")
+                                print(f"       🏷️ 类型: {doc_info['type']}")
+                                print(f"       📅 年份: {doc_info['year']}")
+                                print(f"       📈 引用数: {doc_info['citations']}")
+                                content_preview = doc_info['content'][:100] if len(doc_info['content']) > 100 else doc_info['content']
+                                print(f"       📝 {content_preview}{'...' if len(doc_info['content']) > 100 else ''}")
+                                
+                            except Exception as e:
+                                print(f"   ⚠️ 处理第{rank}个结果失败: {e}")
+                                continue
+                    else:
+                        print("   ⚠️ 无有效的排序结果")
+                else:
+                    print("   ⚠️ API响应中无有效输出")
+            else:
+                print(f"❌ 医疗场景演示失败: HTTP状态码 {response.status_code}")
+                if hasattr(response, 'message'):
+                    print(f"   错误信息: {response.message}")
+                print("   💡 提示：检查API密钥和网络连接")
                     
         except Exception as e:
             print(f"❌ 医疗场景演示失败: {e}")
@@ -258,9 +347,42 @@ class TextRerankTutorial:
                 )
                 
                 if response.status_code == 200:
-                    print(f"   🎯 前3个最相关文档:")
-                    for rank, result in enumerate(response.output.results, 1):
-                        print(f"      {rank}. {result.relevance_score:.3f} - {result.document[:80]}...")
+                    if hasattr(response, 'output') and response.output is not None:
+                        output = response.output
+                        results = None
+                        
+                        if isinstance(output, dict):
+                            results = output.get('results')
+                        elif hasattr(output, 'results'):
+                            results = output.results
+                        else:
+                            results = output
+                        
+                        if results and len(results) > 0:
+                            print(f"   🎯 前{min(3, len(results))}个最相关文档:")
+                            
+                            for rank, result in enumerate(results[:3], 1):
+                                try:
+                                    if isinstance(result, dict):
+                                        score = result.get('relevance_score', 0.0)
+                                        document = result.get('document', '')
+                                        document = document[:80] if len(document) > 80 else document
+                                    elif hasattr(result, 'relevance_score'):
+                                        score = result.relevance_score
+                                        document = getattr(result, 'document', '')
+                                        document = document[:80] if len(document) > 80 else document
+                                    else:
+                                        score = 0.0
+                                        document = str(result)
+                                        document = document[:80] if len(document) > 80 else document
+                                    
+                                    print(f"      {rank}. {score:.3f} - {document}...")
+                                except Exception as e:
+                                    print(f"      {rank}. 处理失败: {e}")
+                        else:
+                            print("      ⚠️ 无排序结果")
+                    else:
+                        print("      ⚠️ API响应无效")
                         
             except Exception as e:
                 print(f"   ❌ {lang} 语言演示失败: {e}")
@@ -309,11 +431,28 @@ class TextRerankTutorial:
                     documents=docs_subset,
                     top_n=size
                 )
-                rerank_time = time.time() - start_time
-                
-                total_time = embedding_time + rerank_time
-                
-                print(f"{size:4d} | {embedding_time:8.3f}s | {rerank_time:8.3f}s | {total_time:8.3f}s")
+                if response.status_code == 200:
+                    if hasattr(response, 'output') and response.output is not None:
+                        output = response.output
+                        results = None
+                        
+                        if isinstance(output, dict):
+                            results = output.get('results')
+                        elif hasattr(output, 'results'):
+                            results = output.results
+                        else:
+                            results = output
+                        
+                        if results is not None:
+                            rerank_time = time.time() - start_time
+                            total_time = embedding_time + rerank_time
+                            print(f"{size:4d} | {embedding_time:8.3f}s | {rerank_time:8.3f}s | {total_time:8.3f}s")
+                        else:
+                            print(f"{size:4d} | {embedding_time:8.3f}s | {'NO_RES':8s} | {'N/A':8s}")
+                    else:
+                        print(f"{size:4d} | {embedding_time:8.3f}s | {'NO_OUT':8s} | {'N/A':8s}")
+                else:
+                    print(f"{size:4d} | {embedding_time:8.3f}s | {'HTTP_{response.status_code}':8s} | {'N/A':8s}")
                 
             except Exception as e:
                 print(f"{size:4d} | {embedding_time:8.3f}s | {'ERROR':8s} | {'N/A':8s}")

@@ -177,22 +177,48 @@ def main():
     print("欢迎来到文本嵌入学习之旅！")
     print("本课程将帮助你理解文本嵌入的核心概念。\n")
     
-    # 创建演示实例
-    demo = TextEmbeddingConcept()
-    
-    # 运行演示
-    word_vectors = demo.demonstrate_word_mapping()
-    demo.demonstrate_similarity_calculation(word_vectors)
-    demo.visualize_2d_projection()
-    demo.explain_key_concepts()
-    demo.demonstrate_real_world_examples()
-    
-    print("\n🎉 第1课完成！")
-    print("你已经了解了：")
-    print("✅ 什么是文本嵌入")
-    print("✅ 如何计算文本相似度")
-    print("✅ 文本嵌入的实际应用")
-    print("\n下一课：02-first-embedding.py - 获取第一个文本向量")
+    try:
+        input("📚 按回车键开始学习...")
+        
+        # 创建演示实例
+        demo = TextEmbeddingConcept()
+        
+        # 运行演示
+        print("\n" + "="*60)
+        word_vectors = demo.demonstrate_word_mapping()
+        input("\n📚 按回车键继续到相似度计算...")
+        
+        print("\n" + "="*60)
+        demo.demonstrate_similarity_calculation(word_vectors)
+        input("\n📊 按回车键继续到可视化部分...")
+        
+        print("\n" + "="*60)
+        demo.visualize_2d_projection()
+        input("\n📖 按回车键继续到关键概念解释...")
+        
+        print("\n" + "="*60)
+        demo.explain_key_concepts()
+        input("\n🎯 按回车键查看实际应用场景...")
+        
+        print("\n" + "="*60)
+        demo.demonstrate_real_world_examples()
+        
+        print("\n" + "="*60)
+        print("🎉 第1课完成！")
+        print("你已经了解了：")
+        print("✅ 什么是文本嵌入")
+        print("✅ 如何计算文本相似度")
+        print("✅ 文本嵌入的实际应用")
+        print("\n📂 可视化图片已保存为 'embedding_concept_visualization.png'")
+        print("\n🎯 下一课：02-first-embedding.py - 获取第一个文本向量")
+        
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 课程已中断，欢迎下次继续学习！")
+    except Exception as e:
+        print(f"\n❌ 运行过程中出现错误: {str(e)}")
+        print("🔄 请检查环境配置后重试")
+    finally:
+        input("\n📚 按回车键退出课程...")
 
 if __name__ == "__main__":
     main()

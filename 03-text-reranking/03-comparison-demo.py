@@ -33,7 +33,7 @@ plt.rcParams['axes.unicode_minus'] = False
 # 数学符号警告可以忽略，不影响中文显示
 
 # 添加项目根目录到路径
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.embedding_client import EmbeddingClient
 from utils.text_reranker import TextReranker, RerankDocument, RerankResult
 
@@ -174,8 +174,16 @@ class SortingComparison:
                             documents: List[RerankDocument],
                             top_k: int = 10) -> List[Tuple[int, float]]:
         """基于文本排序模型的排序"""
-        results = self.reranker.rerank(query, documents, top_n=top_k)
-        return [(r.original_rank, r.relevance_score) for r in results]
+        try:
+            results = self.reranker.rerank(query, documents, top_n=top_k)
+            if results:
+                return [(r.original_rank, r.relevance_score) for r in results]
+            else:
+                print("⚠️ 文本排序模型未返回有效结果，使用嵌入模型作为备选")
+                return self._embedding_based_ranking(query, documents, top_k)
+        except Exception as e:
+            print(f"⚠️ 文本排序模型调用失败: {e}，使用嵌入模型作为备选")
+            return self._embedding_based_ranking(query, documents, top_k)
     
     def _calculate_metrics(self, 
                           ranked_indices: List[Tuple[int, float]],

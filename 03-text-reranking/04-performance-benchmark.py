@@ -21,7 +21,7 @@ import json
 import time
 import numpy as np
 from typing import List, Dict, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from datetime import datetime
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -30,7 +30,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import matplotlib.font_manager as fm
 
 # 添加项目根目录到路径
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.embedding_client import EmbeddingClient
 from utils.text_reranker import TextReranker, RerankDocument, create_sample_documents
 

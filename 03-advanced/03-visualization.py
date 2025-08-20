@@ -514,7 +514,7 @@ class AdvancedVisualizationSystem:
         print("   • 用户行为可视化")
         print("   • 动态内容分析")
         print("   • 交互式知识探索")
-        print("\n下一课：03-04-performance-optimization.py - 性能优化")
+        print("\n下一课：04-performance-optimization.py - 性能优化")
 
 def main():
     """主函数"""

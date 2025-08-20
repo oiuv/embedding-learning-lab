@@ -362,20 +362,56 @@ class TextClusteringSystem:
 
 def main():
     """主函数"""
-    print("🚀 文本聚类分析系统")
+    print("🚀 中级课程第4课：文本聚类分析")
     print("=" * 60)
-    
-    # 检查API密钥
-    if not os.getenv("DASHSCOPE_API_KEY"):
-        print("⚠️ 请设置 DASHSCOPE_API_KEY 环境变量")
-        return
+    print("基于文本嵌入的聚类分析系统实现。\n")
     
     try:
+        # 检查API密钥
+        if not os.getenv("DASHSCOPE_API_KEY"):
+            print("🔑 API密钥检查")
+            print("-" * 30)
+            print("⚠️ 未检测到 DASHSCOPE_API_KEY 环境变量")
+            print("\n解决方法：")
+            print("1. 临时设置: set DASHSCOPE_API_KEY=你的密钥 (Windows)")
+            print("2. 临时设置: export DASHSCOPE_API_KEY=你的密钥 (Linux/Mac)")
+            print("\n📝 获取API密钥：")
+            print("   访问 https://dashscope.console.aliyun.com 申请")
+            return
+        else:
+            print("✅ 检测到API密钥")
+        
+        input("\n📊 按回车键开始聚类分析演示...")
+        print("\n" + "="*60)
         clustering_system = TextClusteringSystem()
         clustering_system.demo_clustering_system()
         
+        print("\n" + "="*60)
+        print("🎉 聚类分析课程完成！")
+        print("🎯 你已经掌握了：")
+        print("✅ K-means聚类")
+        print("✅ 层次聚类")
+        print("✅ DBSCAN聚类")
+        print("✅ 轮廓系数评估")
+        print("✅ 聚类可视化")
+        print("\n📂 可视化结果已保存为 clustering_*.png")
+        print("\n🚀 实际应用场景:")
+        print("   • 文档主题发现")
+        print("   • 新闻聚类")
+        print("   • 客户反馈分析")
+        print("   • 社交媒体内容分组")
+        print("   • 推荐系统用户分群")
+        print("\n🎓 恭喜你完成了中级课程！")
+        print("\n🎯 准备进入高级模块...")
+        print("\n高级模块：03-advanced/01-knowledge-base.py - 智能知识库")
+        
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 课程已中断，欢迎下次继续学习！")
     except Exception as e:
-        print(f"❌ 运行错误: {e}")
+        print(f"\n❌ 运行错误: {e}")
+        print("🔄 请检查网络连接和API配置")
+    finally:
+        input("\n📚 按回车键退出课程...")
 
 if __name__ == "__main__":
     main()

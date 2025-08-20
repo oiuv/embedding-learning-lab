@@ -92,6 +92,10 @@ tests/knowledge_embeddings_*.pkl
 03-text-reranking/sorting_comparison_results_*.json
 03-text-reranking/performance_benchmark_*.json
 
+# Performance benchmark files (root directory)
+performance_benchmark_*.json
+sorting_comparison_results_*.json
+
 # Keep important files
 !03-text-reranking/README.md
 !03-text-reranking/*.py

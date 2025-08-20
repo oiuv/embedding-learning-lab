@@ -158,59 +158,103 @@ def main():
     """主函数"""
     print("🚀 第2课：获取第一个文本向量")
     print("=" * 60)
+    print("本课程将教你如何实际获取文本的嵌入向量。\n")
     
-    # 检查API密钥
-    if not os.getenv("DASHSCOPE_API_KEY"):
-        print("⚠️ 警告: 未检测到 DASHSCOPE_API_KEY 环境变量")
-        print("请设置环境变量: export DASHSCOPE_API_KEY='你的密钥'")
-        print("或使用: python 02-first-embedding.py --api-key 你的密钥")
-        
-        # 检查命令行参数
-        if len(sys.argv) > 1 and sys.argv[1] == "--api-key":
-            api_key = sys.argv[2] if len(sys.argv) > 2 else None
+    try:
+        # 检查API密钥
+        api_key = None
+        if not os.getenv("DASHSCOPE_API_KEY"):
+            print("🔑 API密钥检查")
+            print("-" * 30)
+            print("⚠️ 未检测到 DASHSCOPE_API_KEY 环境变量")
+            print("\n解决方法：")
+            print("1. 临时设置: set DASHSCOPE_API_KEY=你的密钥 (Windows)")
+            print("2. 临时设置: export DASHSCOPE_API_KEY=你的密钥 (Linux/Mac)")
+            print("3. 作为参数传入: python 02-first-embedding.py --api-key 你的密钥")
+            print("\n📝 获取API密钥：")
+            print("   访问 https://dashscope.console.aliyun.com 申请")
+            
+            # 检查命令行参数
+            if len(sys.argv) > 1 and sys.argv[1] == "--api-key" and len(sys.argv) > 2:
+                api_key = sys.argv[2]
+                print(f"\n✅ 使用命令行提供的API密钥: {api_key[:8]}...")
+            else:
+                api_key = input("\n请输入您的API密钥 (或直接回车跳过): ").strip()
+                if not api_key:
+                    print("⚠️ 未提供API密钥，将使用演示模式")
+                    print("   这将模拟API调用，但不会真正获取嵌入")
+                    return
         else:
-            api_key = None
-    else:
-        api_key = os.getenv("DASHSCOPE_API_KEY")
-    
-    # 创建实例
-    embedder = FirstEmbedding(api_key)
-    
-    # 获取第一个文本的嵌入
-    first_text = "你好，世界！"
-    print(f"🎯 获取第一个文本的嵌入向量: '{first_text}'")
-    
-    embedding = embedder.get_single_embedding(first_text)
-    
-    if embedding:
-        # 分析嵌入
-        embedder.analyze_embedding(first_text, embedding)
-        embedder.validate_embedding_quality(first_text, embedding)
-        embedder.save_embedding_example(first_text, embedding)
+            api_key = os.getenv("DASHSCOPE_API_KEY")
+            print("✅ 检测到环境变量中的API密钥")
         
-        # 比较多个文本
-        sample_texts = [
-            "机器学习",
-            "深度学习",
-            "人工智能",
-            "自然语言处理"
-        ]
+        input("\n📚 按回车键开始配置...")
         
-        embeddings = embedder.compare_texts(sample_texts)
+        # 创建实例
+        print("\n" + "="*60)
+        embedder = FirstEmbedding(api_key)
         
-        # 批量处理
-        batch_embeddings = embedder.demonstrate_batch_processing(sample_texts)
+        # 获取第一个文本的嵌入
+        first_text = "你好，世界！"
+        print(f"\n🎯 获取第一个文本的嵌入向量: '{first_text}'")
+        print("-" * 50)
         
-        print("\n🎉 第2课完成！")
-        print("你已经学会了：")
-        print("✅ 配置API环境")
-        print("✅ 获取单个文本向量")
-        print("✅ 批量获取文本向量")
-        print("✅ 验证嵌入质量")
-        print("✅ 保存嵌入结果")
-        print("\n下一课：03-similarity-calculation.py - 计算文本相似度")
-    else:
-        print("❌ 获取嵌入失败，请检查配置")
+        embedding = embedder.get_single_embedding(first_text)
+        
+        if embedding:
+            input("\n📊 按回车键分析嵌入结果...")
+            
+            # 分析嵌入
+            print("\n" + "="*60)
+            embedder.analyze_embedding(first_text, embedding)
+            
+            input("\n🔍 按回车键验证嵌入质量...")
+            print("\n" + "="*60)
+            embedder.validate_embedding_quality(first_text, embedding)
+            
+            input("\n💾 按回车键保存嵌入示例...")
+            print("\n" + "="*60)
+            embedder.save_embedding_example(first_text, embedding)
+            
+            # 比较多个文本
+            sample_texts = [
+                "机器学习",
+                "深度学习",
+                "人工智能",
+                "自然语言处理"
+            ]
+            
+            input(f"\n🔄 按回车键比较多个文本: {', '.join(sample_texts)}...")
+            print("\n" + "="*60)
+            embeddings = embedder.compare_texts(sample_texts)
+            
+            input("\n📦 按回车键演示批量处理...")
+            print("\n" + "="*60)
+            batch_embeddings = embedder.demonstrate_batch_processing(sample_texts)
+            
+            print("\n" + "="*60)
+            print("🎉 第2课完成！")
+            print("你已经学会了：")
+            print("✅ 配置API环境")
+            print("✅ 获取单个文本向量")
+            print("✅ 批量获取文本向量")
+            print("✅ 验证嵌入质量")
+            print("✅ 保存嵌入结果")
+            print("\n📂 嵌入结果已保存到 01-basics/data/ 目录")
+            print("\n🎯 下一课：03-similarity-calculation.py - 计算文本相似度")
+        else:
+            print("\n❌ 获取嵌入失败，请检查：")
+            print("1. API密钥是否正确")
+            print("2. 网络连接是否正常")
+            print("3. 账户是否有足够额度")
+            
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 课程已中断，欢迎下次继续学习！")
+    except Exception as e:
+        print(f"\n❌ 运行过程中出现错误: {str(e)}")
+        print("🔄 请检查环境配置后重试")
+    finally:
+        input("\n📚 按回车键退出课程...")
 
 if __name__ == "__main__":
     main()

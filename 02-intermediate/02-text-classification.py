@@ -308,33 +308,52 @@ class TextClassificationSystem:
 
 def main():
     """主函数"""
-    print("🚀 文本分类系统")
+    print("🚀 中级课程第2课：文本分类系统")
     print("=" * 60)
-    
-    # 检查API密钥
-    if not os.getenv("DASHSCOPE_API_KEY"):
-        print("⚠️ 请设置 DASHSCOPE_API_KEY 环境变量")
-        return
+    print("基于文本嵌入的文本自动分类系统实现。\n")
     
     try:
+        # 检查API密钥
+        if not os.getenv("DASHSCOPE_API_KEY"):
+            print("🔑 API密钥检查")
+            print("-" * 30)
+            print("⚠️ 未检测到 DASHSCOPE_API_KEY 环境变量")
+            print("\n解决方法：")
+            print("1. 临时设置: set DASHSCOPE_API_KEY=你的密钥 (Windows)")
+            print("2. 临时设置: export DASHSCOPE_API_KEY=你的密钥 (Linux/Mac)")
+            print("\n📝 获取API密钥：")
+            print("   访问 https://dashscope.console.aliyun.com 申请")
+            return
+        else:
+            print("✅ 检测到API密钥")
+        
+        input("\n📊 按回车键开始文本分类演示...")
+        print("\n" + "="*60)
         classifier = TextClassificationSystem()
         classifier.demo_text_classification()
         
-        print("\n🎉 文本分类演示完成！")
-        print("\n核心技术总结:")
-        print("   • 基于嵌入的文本分类")
-        print("   • 零样本分类")
-        print("   • 多标签分类")
-        print("   • 置信度评估")
-        print("\n实际应用场景:")
+        print("\n" + "="*60)
+        print("🎉 文本分类课程完成！")
+        print("🎯 你已经掌握了：")
+        print("✅ 基于嵌入的文本分类")
+        print("✅ 零样本分类")
+        print("✅ 多标签分类")
+        print("✅ 置信度评估")
+        print("\n🚀 实际应用场景:")
         print("   • 新闻文章自动分类")
         print("   • 垃圾邮件检测")
         print("   • 客户反馈分析")
         print("   • 社交媒体内容审核")
-        print("\n下一课：03-text-recommendation.py - 推荐系统")
+        print("\n🎯 准备进入下一课程...")
+        print("\n中级模块：03-recommendation-system.py - 推荐系统")
         
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 课程已中断，欢迎下次继续学习！")
     except Exception as e:
-        print(f"❌ 运行错误: {e}")
+        print(f"\n❌ 运行错误: {e}")
+        print("🔄 请检查网络连接和API配置")
+    finally:
+        input("\n📚 按回车键退出课程...")
 
 if __name__ == "__main__":
     main()

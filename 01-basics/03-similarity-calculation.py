@@ -266,40 +266,64 @@ def main():
     """主函数"""
     print("🚀 第3课：计算文本相似度")
     print("=" * 60)
+    print("本课程将教你如何计算文本之间的相似度。\n")
     
-    # 创建计算器实例
-    calculator = SimilarityCalculator()
-    
-    # 运行演示
-    calculator.demonstrate_similarity_calculation()
-    calculator.compare_different_similarity_methods()
-    
-    # 查找相似文本
-    sample_texts = [
-        "人工智能技术",
-        "机器学习算法",
-        "深度学习框架",
-        "自然语言处理",
-        "计算机视觉",
-        "数据科学",
-        "神经网络",
-        "Python编程",
-        "Java开发",
-        "Web开发"
-    ]
-    
-    calculator.find_most_similar_texts("人工智能", sample_texts, top_k=5)
-    calculator.demonstrate_similarity_threshold()
-    calculator.create_similarity_matrix(sample_texts[:5])
-    
-    print("\n🎉 第3课完成！")
-    print("你已经学会了：")
-    print("✅ 余弦相似度计算")
-    print("✅ 不同相似度方法比较")
-    print("✅ 查找最相似文本")
-    print("✅ 使用相似度阈值")
-    print("✅ 创建相似度矩阵")
-    print("\n下一课：04-vector-operations.py - 向量操作基础")
+    try:
+        # 创建计算器实例
+        calculator = SimilarityCalculator()
+        
+        input("📊 按回车键开始基础相似度计算...")
+        print("\n" + "="*60)
+        calculator.demonstrate_similarity_calculation()
+        
+        input("\n🔍 按回车键比较不同相似度方法...")
+        print("\n" + "="*60)
+        calculator.compare_different_similarity_methods()
+        
+        # 查找相似文本
+        sample_texts = [
+            "人工智能技术",
+            "机器学习算法",
+            "深度学习框架",
+            "自然语言处理",
+            "计算机视觉",
+            "数据科学",
+            "神经网络",
+            "Python编程",
+            "Java开发",
+            "Web开发"
+        ]
+        
+        input(f"\n🔎 按回车键查找最相似文本 (查询: '人工智能')...")
+        print("\n" + "="*60)
+        calculator.find_most_similar_texts("人工智能", sample_texts, top_k=5)
+        
+        input("\n📏 按回车键学习相似度阈值应用...")
+        print("\n" + "="*60)
+        calculator.demonstrate_similarity_threshold()
+        
+        input("\n📈 按回车键创建相似度矩阵...")
+        print("\n" + "="*60)
+        calculator.create_similarity_matrix(sample_texts[:5])
+        
+        print("\n" + "="*60)
+        print("🎉 第3课完成！")
+        print("你已经学会了：")
+        print("✅ 余弦相似度计算")
+        print("✅ 不同相似度方法比较")
+        print("✅ 查找最相似文本")
+        print("✅ 使用相似度阈值")
+        print("✅ 创建相似度矩阵")
+        print("\n📂 相似度矩阵已保存到 'similarity_matrix.txt'")
+        print("\n🎯 下一课：04-vector-operations.py - 向量操作基础")
+        
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 课程已中断，欢迎下次继续学习！")
+    except Exception as e:
+        print(f"\n❌ 运行过程中出现错误: {str(e)}")
+        print("🔄 请检查网络连接和API配置后重试")
+    finally:
+        input("\n📚 按回车键退出课程...")
 
 if __name__ == "__main__":
     main()

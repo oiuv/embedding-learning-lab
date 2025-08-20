@@ -27,7 +27,7 @@ import hashlib
 import time
 
 # 添加项目根目录到路径
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from utils.embedding_client import EmbeddingClient
 
 # 初始化DashScope
@@ -186,27 +186,62 @@ class TextRerankIntegrator:
             )
             
             if response.status_code == 200:
-                results = []
-                rerank_results = response.output.results
-                
-                # 创建原始排名映射
-                original_ranks = {doc.doc_id: i for i, doc in enumerate(documents)}
-                
-                for rank, result in enumerate(rerank_results):
-                    doc_idx = result.index
-                    doc = documents[doc_idx]
+                if hasattr(response, 'output') and response.output is not None:
+                    output = response.output
+                    results_data = None
                     
-                    results.append(RankingResult(
-                        document=doc,
-                        original_score=doc.score,
-                        rerank_score=result.relevance_score,
-                        final_score=result.relevance_score,
-                        rank_change=original_ranks[doc.doc_id] - rank
-                    ))
-                
-                return results
+                    if isinstance(output, dict):
+                        results_data = output.get('results')
+                    elif hasattr(output, 'results'):
+                        results_data = output.results
+                    else:
+                        results_data = output
+                    
+                    if results_data and len(results_data) > 0:
+                        results = []
+                        
+                        # 创建原始排名映射
+                        original_ranks = {doc.doc_id: i for i, doc in enumerate(documents)}
+                        
+                        for rank, result in enumerate(results_data):
+                            try:
+                                # 安全获取索引和分数
+                                if isinstance(result, dict):
+                                    doc_idx = result.get('index', rank)
+                                    relevance_score = result.get('relevance_score', 0.0)
+                                elif hasattr(result, 'index'):
+                                    doc_idx = result.index
+                                    relevance_score = getattr(result, 'relevance_score', 0.0)
+                                else:
+                                    doc_idx = rank
+                                    relevance_score = 0.0
+                                
+                                # 确保索引在有效范围内
+                                doc_idx = max(0, min(doc_idx, len(documents)-1))
+                                doc = documents[doc_idx]
+                                
+                                results.append(RankingResult(
+                                    document=doc,
+                                    original_score=doc.score,
+                                    rerank_score=relevance_score,
+                                    final_score=relevance_score,
+                                    rank_change=original_ranks[doc.doc_id] - rank
+                                ))
+                            except Exception as e:
+                                print(f"⚠️ 处理排序结果{rank}失败: {e}")
+                                continue
+                        
+                        return results
+                    else:
+                        print("⚠️ 无有效的排序结果返回")
+                        return []
+                else:
+                    print("⚠️ API响应中无有效输出")
+                    return []
             else:
-                print(f"❌ 排序失败: {response}")
+                print(f"❌ 排序失败: HTTP状态码 {response.status_code}")
+                if hasattr(response, 'message'):
+                    print(f"   错误信息: {response.message}")
                 return []
                 
         except Exception as e:
@@ -363,6 +398,7 @@ class ComplexDataGenerator:
                 problem="复杂问题",
                 timeframe="未来5年",
                 disease="疾病",
+                condition="疾病状态",
                 method="新技术",
                 treatment="新疗法",
                 percentage="20-30%",

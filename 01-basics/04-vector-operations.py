@@ -314,26 +314,53 @@ def main():
     """主函数"""
     print("🚀 第4课：向量操作基础")
     print("=" * 60)
+    print("本课程将教你如何操作和分析文本嵌入向量。\n")
     
-    # 创建操作器实例
-    operator = VectorOperations()
-    
-    # 运行演示
-    operator.demonstrate_basic_operations()
-    operator.demonstrate_semantic_analogy()
-    operator.demonstrate_vector_clustering()
-    operator.demonstrate_dimensionality_reduction()
-    operator.demonstrate_vector_statistics()
-    
-    print("\n🎉 第4课完成！")
-    print("你已经学会了：")
-    print("✅ 基本向量操作（加减乘除）")
-    print("✅ 语义类比运算")
-    print("✅ 向量聚类分析")
-    print("✅ 降维可视化技术")
-    print("✅ 向量统计分析")
-    print("\n基础课程完成！准备进入中级应用...")
-    print("下一模块：02-intermediate/01-semantic-search.py - 语义搜索")
+    try:
+        # 创建操作器实例
+        operator = VectorOperations()
+        
+        input("📐 按回车键开始学习基本向量操作...")
+        print("\n" + "="*60)
+        operator.demonstrate_basic_operations()
+        
+        input("\n🧠 按回车键体验语义类比运算...")
+        print("\n" + "="*60)
+        operator.demonstrate_semantic_analogy()
+        
+        input("\n📊 按回车键进行向量聚类分析...")
+        print("\n" + "="*60)
+        texts, embeddings, labels = operator.demonstrate_vector_clustering()
+        
+        input("\n📉 按回车键学习降维可视化...")
+        print("\n" + "="*60)
+        operator.demonstrate_dimensionality_reduction()
+        
+        input("\n📈 按回车键进行向量统计分析...")
+        print("\n" + "="*60)
+        embeddings_array = operator.demonstrate_vector_statistics()
+        
+        print("\n" + "="*60)
+        print("🎉 第4课完成！")
+        print("🎓 基础课程已全部完成！")
+        print("\n你已经掌握了：")
+        print("✅ 基本向量操作（加减乘除）")
+        print("✅ 语义类比运算")
+        print("✅ 向量聚类分析")
+        print("✅ 降维可视化技术")
+        print("✅ 向量统计分析")
+        print("\n📂 可视化结果已保存为 'vector_operations_visualization.png'")
+        print("\n🚀 恭喜你完成了基础课程！")
+        print("\n🎯 准备进入中级应用阶段...")
+        print("\n中级模块：02-intermediate/01-semantic-search.py - 语义搜索")
+        
+    except KeyboardInterrupt:
+        print("\n\n⚠️ 课程已中断，欢迎下次继续学习！")
+    except Exception as e:
+        print(f"\n❌ 运行过程中出现错误: {str(e)}")
+        print("🔄 请检查网络连接和API配置后重试")
+    finally:
+        input("\n📚 按回车键退出基础课程...")
 
 if __name__ == "__main__":
     main()

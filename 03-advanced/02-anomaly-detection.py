@@ -465,7 +465,7 @@ def main():
         print("   • 欺诈检测")
         print("   • 内容质量监控")
         print("   • 实时风控系统")
-        print("\n下一课：03-03-visualization.py - 高级可视化")
+        print("\n下一课：03-visualization.py - 高级可视化")
         
     except Exception as e:
         print(f"❌ 运行错误: {e}")
