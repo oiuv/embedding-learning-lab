@@ -132,10 +132,6 @@ def get_tutorial_list() -> Dict[str, List[Dict]]:
             {"name": "内容推荐引擎", "file": "04-projects/02-content-recommendation/main.py"},
             {"name": "语义搜索引擎", "file": "04-projects/03-semantic-search-engine/main.py"},
             {"name": "文档分析工具", "file": "04-projects/04-document-analyzer/main.py"}
-        ],
-        "快速体验": [
-            {"name": "一键体验所有基础功能", "file": "quick_start.py"},
-            {"name": "交互式演示", "file": "interactive_demo.py"}
         ]
     }
 
@@ -257,13 +253,15 @@ def function_menu(tutorials):
             "02-intermediate/01-semantic-search.py"
         ]},
         "2": {"name": "智能推荐体验", "files": [
-            "02-intermediate/03-recommendation-system.py"
+            "02-intermediate/02-text-classification.py",
+            "02-intermediate/03-text-recommendation.py"
         ]},
         "3": {"name": "文本分类体验", "files": [
             "02-intermediate/02-text-classification.py"
         ]},
         "4": {"name": "高级排序体验", "files": [
-            "03-text-reranking/01-text-rerank-basics.py"
+            "03-text-reranking/01-text-rerank-basics.py",
+            "03-text-reranking/02-integration-guide.py"
         ]},
         "5": {"name": "完整项目体验", "files": [
             "04-projects/01-smart-qa-system/main.py"
@@ -282,8 +280,6 @@ def function_menu(tutorials):
         func = functions[str(choice)]
         for file in func["files"]:
             run_script(file)
-            if input("\n继续下一个？[Y/n]: ").lower() == 'n':
-                break
 
 def run_all_basic(tutorials):
     """一键运行所有基础教程"""
